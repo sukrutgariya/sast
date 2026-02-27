@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/codeql/.vs
+/codeql/codeql/bin/Debug/net8.0
+/codeql/codeql/obj
+/.vs
