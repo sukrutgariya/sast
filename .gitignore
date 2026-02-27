@@ -6,3 +6,5 @@
 /codeql/codeql/bin/Debug/net8.0
 /codeql/codeql/obj
 /.vs
+/codeql/bin/Debug/net8.0
+/codeql/obj
