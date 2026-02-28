@@ -1,0 +1,33 @@
+name: SAST Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+permissions:
+  security-events: write
+  contents: read
+
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: 'csharp'
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Build for CodeQL analysis
+      run: dotnet build --configuration Release
+
+    - name: Perform CodeQL analysis
+      uses: github/codeql-action/analyze@v3
