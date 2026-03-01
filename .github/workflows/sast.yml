@@ -24,6 +24,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
+        repository: sukrutgariya/sast
         fetch-depth: 0   # full history
 
 
