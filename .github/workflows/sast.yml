@@ -3,6 +3,10 @@ name: SAST Check
 on:
   pull_request:
     branches: [ main, develop ]
+  push:
+    branches: [ "develop" ]
+
+
 
 permissions:
   security-events: write
@@ -13,8 +17,12 @@ jobs:
   sast:
     runs-on: ubuntu-latest
 
+    permissions:
+      security-events: write
+
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
@@ -25,6 +33,9 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
 
     - name: Build for CodeQL analysis
       run: dotnet build --configuration Release
