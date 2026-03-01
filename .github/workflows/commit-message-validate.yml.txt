@@ -1,0 +1,41 @@
+name: Commit message validation
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/*'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git fetch --prune --unshallow || true
+
+      - name: Determine commit range
+        id: range
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "FROM=$(git merge-base origin/${{ github.base_ref }} HEAD)" >> $GITHUB_OUTPUT
+            echo "TO=HEAD" >> $GITHUB_OUTPUT
+          else
+            echo "FROM=origin/${{ github.ref_name }}~1" >> $GITHUB_OUTPUT
+            echo "TO=HEAD" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run commit validation script
+        env:
+          FROM: ${{ steps.range.outputs.FROM }}
+          TO: ${{ steps.range.outputs.TO }}
+        run: |
+          chmod +x ./scripts/validate-commits.sh
+          ./scripts/validate-commits.sh "$FROM" "$TO"
